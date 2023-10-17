@@ -1,0 +1,81 @@
+import pygame
+import random
+
+# Inicialización de Pygame
+pygame.init()
+
+# Configuración de la pantalla
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Esquiva los Obstáculos")
+
+# Colores
+white = (255, 255, 255)
+black = (0, 0, 0)
+
+# Personaje
+character_width = 50
+character_height = 50
+character_x = (screen_width - character_width) // 2
+character_y = screen_height - character_height
+
+# Obstáculos
+obstacle_width = 50
+obstacle_height = 50
+obstacle_x = random.randint(0, screen_width - obstacle_width)
+obstacle_y = 0
+obstacle_speed = 5
+
+# Puntuación
+score = 0
+font = pygame.font.Font(None, 36)
+
+# Game Loop
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Movimiento del personaje
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and character_x > 0:
+        character_x -= 5
+    if keys[pygame.K_RIGHT] and character_x < screen_width - character_width:
+        character_x += 5
+
+    # Actualizar posición del obstáculo
+    obstacle_y += obstacle_speed
+
+    # Detección de colisiones
+    if character_x < obstacle_x + obstacle_width and character_x + character_width > obstacle_x \
+            and character_y < obstacle_y + obstacle_height and character_y + character_height > obstacle_y:
+        running = False
+
+    # Generar un nuevo obstáculo cuando el anterior sale de la pantalla
+    if obstacle_y > screen_height:
+        obstacle_x = random.randint(0, screen_width - obstacle_width)
+        obstacle_y = 0
+        score += 1
+
+    # Limpiar la pantalla
+    screen.fill(white)
+
+    # Dibujar el personaje
+    pygame.draw.rect(screen, black, (character_x, character_y, character_width, character_height))
+
+    # Dibujar el obstáculo
+    pygame.draw.rect(screen, black, (obstacle_x, obstacle_y, obstacle_width, obstacle_height))
+
+    # Mostrar la puntuación en la pantalla
+    text = font.render("Puntuación: " + str(score), True, black)
+    screen.blit(text, (10, 10))
+
+    pygame.display.update()
+    clock.tick(60)
+
+# Fin del juego
+pygame.quit()
