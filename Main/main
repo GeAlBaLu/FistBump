@@ -25,7 +25,9 @@ obstacle_width = 50
 obstacle_height = 50
 obstacle_x = random.randint(0, screen_width - obstacle_width)
 obstacle_y = 0
-obstacle_speed = 5
+obstacle_speed = 5  # Velocidad inicial
+max_obstacle_speed = 50  # Velocidad máxima
+speed_increment = 1  # Incremento de velocidad
 
 # Puntuación
 score = 0
@@ -60,6 +62,10 @@ while running:
         obstacle_x = random.randint(0, screen_width - obstacle_width)
         obstacle_y = 0
         score += 1
+
+        # Aumentar la velocidad gradualmente, pero no superar la velocidad máxima
+        if obstacle_speed < max_obstacle_speed:
+            obstacle_speed += speed_increment
 
     # Limpiar la pantalla
     screen.fill(white)
